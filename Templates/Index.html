@@ -3,8 +3,13 @@
 <head>
     <title>PDF Portal</title>
     <style>
-        body {
-            font-family: 'Times New Roman', serif, sans-serif;
+        body{
+      background-image: url('/static/images/background.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: white;
+       family: 'Times New Roman', serif, sans-serif;
             margin: 100px
         }
         h2 {
@@ -33,12 +38,14 @@
 </head>
 <body>
     <h1>PDF Tools Portal</h1>
-
     <h2>1️⃣ Merge PDFs</h2>
     <form action="/merge" method="post" enctype="multipart/form-data">
-        <input type="file" name="pdfs" multiple required>
-        <input type="submit" value="Merge PDFs">
-    </form>
+      <input type="file" name="pdf_files" multiple required>
+      <input type="submit" value="Merge PDFs">
+</form>
+
+
+    
 
     <h2>2️⃣ Convert to PDF (Word or Image)</h2>
     <form action="/convert" method="post" enctype="multipart/form-data">
@@ -57,4 +64,18 @@
     <form action="/annotate" method="post" enctype="multipart/form-data">
         <input type="file" name="pdf" required>
         <input type="text" name="text" placeholder="Text to add (e.g., Hello!)" required>
-        <input type="submit" value=
+        <input type="submit" value="Remove Pages">
+    </form>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+        

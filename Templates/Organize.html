@@ -1,5 +1,15 @@
-<h2>Organize PDF</h2>
-<form method="POST" enctype="multipart/form-data">
-  <input type="file" name="pdf" required>
-  <button type="submit">Organize</button>
-</form>
+<!-- templates/organize.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Organize PDF</title>
+</head>
+<body>
+    <h2>Organize PDF Pages</h2>
+    <form action="/organize" method="post" enctype="multipart/form-data">
+        <input type="file" name="pdf_file" required><br><br>
+        <input type="text" name="order" placeholder="New order (e.g., 3,1,2)" required><br><br>
+        <button type="submit">Organize PDF</button>
+    </form>
+</body>
+</html>

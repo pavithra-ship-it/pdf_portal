@@ -4,6 +4,8 @@ from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 from werkzeug.utils import secure_filename
 from fpdf import FPDF
 from PyPDF2 import PdfMerger
+from flask import request
+
 
 
 app = Flask(__name__)
@@ -62,23 +64,42 @@ def edit_pdf():
     return send_file(output_path, as_attachment=True)
 
 # 3. Organize (example: reverse page order)
-@app.route('/organize', methods=['POST'])
-def organize_pdf():
-    file = request.files['pdf_file']
-    filepath = os.path.join(UPLOAD_FOLDER, secure_filename(file.filename))
-    file.save(filepath)
+@app.route('/organize', methods=['GET', 'POST'])
+def organize():
+    if request.method == 'POST':
+        file = request.files.get('pdf_file')
+        order_str = request.form.get('order')
 
-    reader = PdfReader(filepath)
-    writer = PdfWriter()
+        if not file or not order_str:
+            return "Missing file or page order", 400
 
-    for page in reversed(reader.pages):
-        writer.add_page(page)
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
 
-    output_path = os.path.join(PROCESSED_FOLDER, 'organized.pdf')
-    with open(output_path, 'wb') as f:
-        writer.write(f)
+        try:
+            reader = PdfReader(filepath)
+            writer = PdfWriter()
 
-    return send_file(output_path, as_attachment=True)
+            # Parse page order from user input
+            page_order = [int(num.strip()) for num in order_str.split(',')]
+
+            for i in page_order:
+                if 1 <= i <= len(reader.pages):
+                    writer.add_page(reader.pages[i - 1])  # 1-based index
+                else:
+                    return f"Invalid page number: {i}", 400
+
+            output_path = os.path.join(PROCESSED_FOLDER, 'organized.pdf')
+            with open(output_path, 'wb') as f:
+                writer.write(f)
+
+            return send_file(output_path, as_attachment=True)
+
+        except Exception as e:
+            return f"Error: {e}", 500
+
+    return render_template('organize.html')
 
 # 4. Convert to PDF (from text)
 @app.route('/convert', methods=['POST'])
